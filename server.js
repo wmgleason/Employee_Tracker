@@ -9,7 +9,7 @@ const util = require("util");
 
 
 // Enable access to .env variables
-require('dotenv').config();
+// require('dotenv').config();
 
 // Use environment variables to connect to database
 var connection = new mysql.createConnection({
@@ -27,7 +27,7 @@ connection.connect((err) => {
     promptUser();
 });
 
-connection.query = util.promisify(connection.query);
+// connection.query = util.promisify(connection.query);
 // Starting the inquirer prompts for the user to make a selection
 //Altered to go more exactly according to the homework guidelines
 function promptUser () {
@@ -52,7 +52,7 @@ function promptUser () {
         else if (answer.usersChoice === "Add a department"){
             addDept();
         }
-        else if (answer.usersChoice === "Add a employee role"){
+        else if (answer.usersChoice === "Add an employee role"){
             addRole();
         }
         else if (answer.usersChoice === "Add an employee"){
@@ -68,19 +68,21 @@ function promptUser () {
 }
 
 // Adding functions to carry out the users choice
-function viewDepts(){
-    connection.query("SELECT * FROM departments;",
-    async function (err, res){
-        try {
-            if (err) throw err;
-            console.table("departments", res);
-            await promptUser();
-        }
-        catch(err){
-            console.log(err);
-        }
-    })
-};
+function viewDepts() {
+    const query = `SELECT departments.dept_name AS departments, roles.title, employees.employee_id, employees.first_name, employees.last_name
+    FROM employees_db
+    LEFT JOIN roles ON (roles.role_id = employees.role_id)
+    LEFT JOIN departments ON (departments.dept_id = roles.dept_id)
+    ORDER BY departments.dept_name;`;
+    connection.query(query, (err, res) => {
+        if (err) throw err;
+        console.log('\n');
+        console.log('Viewing departments');
+        console.log('\n');
+        console.table(res);
+        prompt();
+    });
+}
 
 // function viewRoles()
 
@@ -100,6 +102,7 @@ function exitApp() {
     clear();
     process.exit();
 }
+
 module.exports = mysql;
 
 
