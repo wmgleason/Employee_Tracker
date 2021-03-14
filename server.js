@@ -53,7 +53,10 @@ function promptUser () {
 }
 
 
-
+function exitApp() {
+    clear();
+    process.exit();
+}
 module.exports = mysql;
 
 
