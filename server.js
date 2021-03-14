@@ -39,25 +39,25 @@ function promptUser () {
     ])
     .then(answer => {
         if (answer.usersChoice === "View all employee departments"){
-            viewRecord();
+            viewDepts();
         }
         else if (answer.usersChoice === "View all employee roles"){
-            addRecord();
+            viewRoles();
         }
         else if (answer.usersChoice === "View all employees"){
-            updateRecord();
+            viewEmployees();
         }
         else if (answer.usersChoice === "Add a department"){
-            updateRecord();
+            addDept();
         }
-        else if (answer.usersChoice === "Add an employee role"){
-            updateRecord();
+        else if (answer.usersChoice === "Add a employee role"){
+            addRole();
         }
         else if (answer.usersChoice === "Add an employee"){
-            updateRecord();
+            addEmployee();
         }
-        else if (answer.usersChoice === "Update employee "){
-            updateRecord();
+        else if (answer.usersChoice === "Update employee role"){
+            updateRole();
         }
         else if (answer.usersChoice === "Exit this app"){
             exitApp();
