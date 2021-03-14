@@ -1,4 +1,11 @@
-require('dotenv').config();
+require('dotenv').config()
+module.exports = {
+    username:process.env.DB_USER,
+    password:process.env.DB_PASS,
+    database:process.env.DB_NAME,
+    host:process.env.DB_HOST,
+    dialect:"mysql"
+}
 
 // call once somewhere in the beginning of the app
 var mysql = require("mysql");
@@ -69,18 +76,19 @@ function promptUser () {
 
 // Adding functions to carry out the users choice
 function viewDepts() {
-    const query = `SELECT departments.dept_name AS departments, roles.title, employees.employee_id, employees.first_name, employees.last_name
+    const query = `SELECT departments.dept_name AS departments, 
+    roles.title, employees.employee_id, employees.first_name, employees.last_name
     FROM employees_db
     LEFT JOIN roles ON (roles.role_id = employees.role_id)
     LEFT JOIN departments ON (departments.dept_id = roles.dept_id)
-    ORDER BY departments.dept_name;`;
+    ORDER BY departments.dept_name`
     connection.query(query, (err, res) => {
         if (err) throw err;
         console.log('\n');
         console.log('Viewing departments');
         console.log('\n');
         console.table(res);
-        prompt();
+        promptUser();
     });
 }
 
@@ -98,11 +106,14 @@ function viewDepts() {
 
 
 
-function exitApp() {
-    clear();
-    process.exit();
-}
+// function exitApp() {
+//     clear();
+//     process.exit();
+// }
 
+function exitApp() {
+    connection.end();
+}
 module.exports = mysql;
 
 
