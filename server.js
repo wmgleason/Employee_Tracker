@@ -26,24 +26,37 @@ connection.connect((err) => {
     console.log("Wow, it's connected!");
     promptUser();
 });
-
+// Starting the inquirer prompts for the user to make a selection
+//Altered to go more exactly according to the homework guidelines
 function promptUser () {
     inquirer.prompt([
         {
             name: "usersChoice",
             type: "list",
             message: "What would you like to do here?",
-            choices: ["View a record in the employee database", "Add a record to the employee database", "Update a record in the employee database", "Exit this app"]
+            choices: ["View all employee departments", "View all employee roles", "View all employees", "Add a department", "Added an employee role", "Add an employee", "Exit this app"]
         }
     ])
     .then(answer => {
-        if (answer.usersChoice === "View a record in the employee database"){
+        if (answer.usersChoice === "View all employee departments"){
             viewRecord();
         }
-        else if (answer.usersChoice === "Add a record to the employee database"){
+        else if (answer.usersChoice === "View all employee roles"){
             addRecord();
         }
-        else if (answer.usersChoice === "Update a record in the employee database"){
+        else if (answer.usersChoice === "View all employees"){
+            updateRecord();
+        }
+        else if (answer.usersChoice === "Add a department"){
+            updateRecord();
+        }
+        else if (answer.usersChoice === "Add an employee role"){
+            updateRecord();
+        }
+        else if (answer.usersChoice === "Add an employee"){
+            updateRecord();
+        }
+        else if (answer.usersChoice === "Update employee "){
             updateRecord();
         }
         else if (answer.usersChoice === "Exit this app"){
