@@ -24,7 +24,34 @@ connection.connect((err) => {
         throw err;
     }
     console.log("Wow, it's connected!");
+    promptUser();
 });
+
+function promptUser () {
+    inquirer.prompt([
+        {
+            name: "usersChoice",
+            type: "list",
+            message: "What would you like to do here?",
+            choices: ["View a record in the employee database", "Add a record to the employee database", "Update a record in the employee database", "Exit this app"]
+        }
+    ])
+    .then(answer => {
+        if (answer.usersChoice === "View a record in the employee database"){
+            viewRecord();
+        }
+        else if (answer.usersChoice === "Add a record to the employee database"){
+            addRecord();
+        }
+        else if (answer.usersChoice === "Update a record in the employee database"){
+            updateRecord();
+        }
+        else if (answer.usersChoice === "Exit this app"){
+            exitApp();
+        }
+    });
+}
+
 
 
 module.exports = mysql;
