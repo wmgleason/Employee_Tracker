@@ -5,7 +5,7 @@ var mysql = require("mysql");
 const inquirer = require("inquirer");
 const dotenv = require('dotenv').config();
 const cTable = require('console.table');
-
+const util = require("util");
 
 
 // Enable access to .env variables
@@ -26,6 +26,8 @@ connection.connect((err) => {
     console.log("Wow, it's connected!");
     promptUser();
 });
+
+connection.query = util.promisify(connection.query);
 // Starting the inquirer prompts for the user to make a selection
 //Altered to go more exactly according to the homework guidelines
 function promptUser () {
@@ -64,6 +66,34 @@ function promptUser () {
         }
     });
 }
+
+// Adding functions to carry out the users choice
+function viewDepts(){
+    connection.query("SELECT * FROM departments;",
+    async function (err, res){
+        try {
+            if (err) throw err;
+            console.table("departments", res);
+            await promptUser();
+        }
+        catch(err){
+            console.log(err);
+        }
+    })
+};
+
+// function viewRoles()
+
+// function viewEmployees()
+
+// function addDept()
+
+// function addRole()
+
+// function addEmployee()
+
+// function updateRole()
+
 
 
 function exitApp() {
