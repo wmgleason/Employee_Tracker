@@ -140,7 +140,7 @@ const addEmployee = async () => {
           {
             name: "last_name",
             type: "input",
-            message: "WPlease enter the last name of the new employee."
+            message: "Please enter the last name of the new employee."
           },
           {
             type: "list",
@@ -174,6 +174,69 @@ const addEmployee = async () => {
   async function getRoles() {
     return connection.query(`SELECT title AS name FROM roles`)
   };
+
+  const addRole = async () => {
+    let depts = await getDeptsID();
+      inquirer
+        .prompt([
+          {
+            name: "title",
+            type: "input",
+            message: "Please enter the name of the new role you would like to add:"
+          },
+          {
+            name: "salary",
+            type: "input",
+            message: "What will be the salary for this new role?"
+          },
+          {
+            name: "department",
+            type: "list",
+            message: "In what department will this role be?",
+            choices: ["Management", "Sales", "Accounting", "Warehouse", "Admin"]
+          }
+        ])
+        .then(answer => {
+          const query = `
+          INSERT INTO roles (title, salary, department_id)
+          VALUES (?, ?, ?);
+            `;
+          connection.query(query,[answer.title, answer.salary, answer.departments], function (err, res) {
+            if (err) throw err;
+            console.log("");
+            console.log(answer.title + " added to the Database.");
+            promptUser();
+          }
+          );
+        });
+    };
+
+    const addDept = () => {
+        inquirer
+          .prompt([
+            {
+              name: "name",
+              type: "input",
+              message: "Please enter the name of the new department:"
+            }
+          ])
+          .then(answer => {
+            const query = `
+            INSERT INTO departments (dept_name)
+            VALUES (?);
+              `;
+            connection.query(query,[answer.name], function (err, res) {
+              if (err) throw err;
+              console.log("");
+              console.log(answer.name + " added to the Database.");
+              promptUser();
+            }
+            );
+          });
+      };
+    function getDeptsID() {
+        return connection.query(`SELECT dept_name FROM departments`);
+      };
 // function updateRole()
 
 // async function getRolesID() {
