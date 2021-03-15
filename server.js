@@ -37,7 +37,7 @@ function promptUser() {
             name: "usersChoice",
             type: "list",
             message: "What would you like to do here?",
-            choices: ["View all employee departments", "View all employee roles", "View all employees", "Add a department", "Added an employee role", "Add an employee", "Exit this app"]
+            choices: ["View all employee departments", "View all employee roles", "View all employees", "Add a department", "Add an employee role", "Add an employee", "Exit this app"]
         }
     ])
     .then(answer => {
