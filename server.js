@@ -1,11 +1,5 @@
-require('dotenv').config()
-module.exports = {
-    username:process.env.DB_USER,
-    password:process.env.DB_PASS,
-    database:process.env.DB_NAME,
-    host:process.env.DB_HOST,
-    dialect:"mysql"
-}
+require('dotenv').config();
+
 
 // call once somewhere in the beginning of the app
 var mysql = require("mysql");
@@ -13,10 +7,8 @@ const inquirer = require("inquirer");
 const dotenv = require('dotenv').config();
 const cTable = require('console.table');
 const util = require("util");
-
-
-// Enable access to .env variables
-// require('dotenv').config();
+// const createDB = require("./db");
+// const promisemysql = require("promise-mysql");
 
 // Use environment variables to connect to database
 var connection = new mysql.createConnection({
@@ -31,13 +23,18 @@ connection.connect((err) => {
         throw err;
     }
     console.log("Wow, it's connected!");
+    // connection.query("CREATE DATABASE employees_db", function (err, res) {
+    //     if (err) throw err;
+    //     console.log("Database employees_db created");
+    // });
     promptUser();
 });
+
 
 // connection.query = util.promisify(connection.query);
 // Starting the inquirer prompts for the user to make a selection
 //Altered to go more exactly according to the homework guidelines
-function promptUser () {
+function promptUser() {
     inquirer.prompt([
         {
             name: "usersChoice",
@@ -75,22 +72,46 @@ function promptUser () {
 }
 
 // Adding functions to carry out the users choice
-function viewDepts() {
-    const query = `SELECT departments.dept_name AS departments, 
-    roles.title, employees.employee_id, employees.first_name, employees.last_name
-    FROM employees_db
-    LEFT JOIN roles ON (roles.role_id = employees.role_id)
-    LEFT JOIN departments ON (departments.dept_id = roles.dept_id)
-    ORDER BY departments.dept_name`
-    connection.query(query, (err, res) => {
-        if (err) throw err;
-        console.log('\n');
-        console.log('Viewing departments');
-        console.log('\n');
-        console.table(res);
-        promptUser();
-    });
-}
+// function viewDepts() {
+//     const sql = `SELECT departments.dept_name AS departments, 
+//     roles.title, employees.employee_id, employees.first_name, employees.last_name
+//     FROM employees_db
+//     LEFT JOIN roles ON (roles.role_id = employees.role_id)
+//     LEFT JOIN departments ON (departments.dept_id = roles.dept_id)
+//     ORDER BY departments.dept_name`
+//     connection.promise().query(sql, (err, res) => {
+//         if (err) throw err;
+//         console.log('\n');
+//         console.log('Viewing departments');
+//         console.log('\n');
+//         console.table(res);
+//         promptUser();
+//     });
+// }
+
+    // Query to view all employees
+    // function viewDepts() {
+    //     console.log("Selecting all departments...\n");
+    //     connection.query("SELECT * FROM departments", function (err, res) {
+    //       if (err) throw err;
+    //       // Log all results of the SELECT statement
+    //       console.table(res);
+    //       start();
+    //     });
+    //   }
+      
+//view all employees by department
+    async function viewDepts () {
+        console.log('\n')
+        const query = `SELECT first_name AS 'First Name',
+        last_name AS 'Last Name',
+        departments.dept_name AS 'Department Name' FROM
+        ((employees INNER JOIN roles ON role_id = roles.role_id)
+        INNER JOIN departments ON dept_id = departments.dept_id)
+        ORDER BY employees.employee_id ASC`;
+        const rows = await connection.query(query);
+        console.table(rows[0]);
+};
 
 // function viewRoles()
 
@@ -106,32 +127,7 @@ function viewDepts() {
 
 
 
-// function exitApp() {
-//     clear();
-//     process.exit();
-// }
-
 function exitApp() {
     connection.end();
 }
-module.exports = mysql;
-
-
-
-
-
-// console.table([
-//   {
-//     name: 'foo',
-//     age: 10
-//   }, {
-//     name: 'bar',
-//     age: 20
-//   }
-// ]);
-
-// // prints
-// name  age
-// ----  ---
-// foo   10
-// bar   20
+// module.exports = employees_DB;
