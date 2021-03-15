@@ -7,28 +7,6 @@ const dotenv = require('dotenv').config();
 const cTable = require('console.table');
 const util = require("util");
 
-// const actions = [
-
-//     {
-//         type: "list",
-//         name: "actions",
-//         message: "What would you like to to?",
-//         choices: [
-
-//             "Add new employee",
-//             "View all employees",
-//             "View employees by department",
-//             "Update employee role",
-//             "View all roles",
-//             "Add role",
-//             "View all departments",
-//             "Add department",
-//             "Exit"
-//         ]
-//     }
-// ]
-
-
 // Use environment variables to connect to database
 var connection = new mysql.createConnection({
   host: process.env.DB_HOST,
@@ -90,14 +68,12 @@ function promptUser() {
     });
 }
 
-
-      
 //view all employees by department
 function viewDepts() {
     connection.query("SELECT dept_name AS Departments FROM departments ", function (err, results) {
         console.table(results);
         if (err) throw err;
-        promptUser()
+        promptUser();
     });
 }
 // function viewRoles()
@@ -105,7 +81,7 @@ function viewRoles() {
     connection.query("SELECT title AS Roles FROM roles ", function (err, results) {
         console.table(results);
         if (err) throw err;
-        promptUser()
+        promptUser();
     });
 }
 // function viewEmployees()
@@ -124,7 +100,7 @@ function viewEmployees() {
 
 // function addDept()
 
-// function addRole()
+
 
 // function addEmployee()
 const addEmployee = async () => {
@@ -168,48 +144,45 @@ const addEmployee = async () => {
           }
           );
         });
-    
   };
 
   async function getRoles() {
-    return connection.query(`SELECT title AS name FROM roles`)
-  };
-
-  const addRole = async () => {
-    let depts = await getDeptsID();
-      inquirer
-        .prompt([
-          {
+    return connection.query(`SELECT title AS name FROM roles`);
+  }
+// function addRole()
+function addRole() {
+    inquirer
+        .prompt([{
             name: "title",
-            type: "input",
-            message: "Please enter the name of the new role you would like to add:"
-          },
-          {
+            message: "Role Title:"
+        }, {
             name: "salary",
-            type: "input",
-            message: "What will be the salary for this new role?"
-          },
-          {
-            name: "department",
-            type: "list",
-            message: "In what department will this role be?",
-            choices: ["Management", "Sales", "Accounting", "Warehouse", "Admin"]
-          }
-        ])
-        .then(answer => {
-          const query = `
-          INSERT INTO roles (title, salary, department_id)
-          VALUES (?, ?, ?);
-            `;
-          connection.query(query,[answer.title, answer.salary, answer.departments], function (err, res) {
-            if (err) throw err;
-            console.log("");
-            console.log(answer.title + " added to the Database.");
+            message: "Role Salary:"
+        }, {
+            name: "dept_id",
+            message: "Role Department Id:"
+        }])
+        .then(function (answer) {
+            var roleTitle = answer.title;
+            var roleSalary = answer.salary;
+            var roleDeptId = answer.dept_id;
+            console.log("\n1 new role inserted!\n");
+            var query = connection.query(
+                "INSERT INTO role SET ?",
+                {
+                    title: roleTitle,
+                    salary: roleSalary,
+                    dept_id: roleDeptId
+                },
+                function (err, res) {
+                    if (err) throw err;
+                }
+            );
+            // logs the actual query being run
+            //console.log(query.sql);
             promptUser();
-          }
-          );
         });
-    };
+}
 
     const addDept = () => {
         inquirer
@@ -274,30 +247,12 @@ const addEmployee = async () => {
       };
     function getDeptsID() {
         return connection.query(`SELECT dept_name FROM departments`);
-      };
+      }
 
       async function getEmployees() {
         return connection.query(`SELECT CONCAT (first_name,' ', last_name) AS name FROM employees`);
-      };
-      
-      // VIEW FUNCTIONS
-   
-// function updateRole()
-
-// async function getRolesID() {
-//     let query = await connection.query(`SELECT 
-//     role_id,
-//     title AS name
-//     FROM roles`);
-//     let newQuery = query.map(obj => {
-//       let rObj = {name: obj.name, value: obj.id};
-//     return rObj
-//     });
-//     return newQuery;
-//   };
-  
+      }
 
 function exitApp() {
     connection.end();
 }
-// module.exports = employees_DB;
