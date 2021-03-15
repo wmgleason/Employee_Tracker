@@ -127,10 +127,67 @@ function viewEmployees() {
 // function addRole()
 
 // function addEmployee()
+const addEmployee = async () => {
+    let empRoles = await getRoles();
+    // let manager = await getManagersID();
+      inquirer
+        .prompt([
+          {
+            name: "first_name",
+            type: "input",
+            message: "Please enter the first name of the new employee."
+          },
+          {
+            name: "last_name",
+            type: "input",
+            message: "WPlease enter the last name of the new employee."
+          },
+          {
+            type: "list",
+            message: "What is the role of the new employee?",
+            name: "roles",
+            choices: ["Regional Manager", "Salesperson", "Accountant", "Warehouse", "Administrative Assistant"]
+          },
+          {
+            name: "manager_id",
+            type: "list",
+            message: "Who will be the manager of the new employee?",
+            choices: [1]
+          }
+        ])
+        .then(answer => {
+          const query = `
+          INSERT INTO employees (first_name, last_name, role_id, manager_id)
+          VALUES (?, ?, ?, ?);
+            `;
+          connection.query(query,[answer.first_name, answer.last_name, answer.title, answer.manager_id], function (err, res) {
+            if (err) throw err;
+            console.log("");
+            console.log(` ${answer.first_name} ${answer.last_name} added to the Database.`);
+            promptUser();
+          }
+          );
+        });
+    
+  };
 
+  async function getRoles() {
+    return connection.query(`SELECT title AS name FROM roles`)
+  };
 // function updateRole()
 
-
+// async function getRolesID() {
+//     let query = await connection.query(`SELECT 
+//     role_id,
+//     title AS name
+//     FROM roles`);
+//     let newQuery = query.map(obj => {
+//       let rObj = {name: obj.name, value: obj.id};
+//     return rObj
+//     });
+//     return newQuery;
+//   };
+  
 
 function exitApp() {
     connection.end();
