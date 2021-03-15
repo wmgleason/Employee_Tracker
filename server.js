@@ -108,9 +108,19 @@ function viewRoles() {
         promptUser()
     });
 }
-
-
 // function viewEmployees()
+function viewEmployees() {
+    // select from the db
+    let query = "SELECT * FROM employees";
+    connection.query(query, function(err, res) {
+      if (err) throw err;
+      console.table(res);
+      promptUser();
+    });
+    // show the result to the user (console.table)
+  }
+
+
 
 // function addDept()
 
