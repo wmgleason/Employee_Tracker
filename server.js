@@ -7,26 +7,26 @@ const dotenv = require('dotenv').config();
 const cTable = require('console.table');
 const util = require("util");
 
-const actions = [
+// const actions = [
 
-    {
-        type: "list",
-        name: "actions",
-        message: "What would you like to to?",
-        choices: [
+//     {
+//         type: "list",
+//         name: "actions",
+//         message: "What would you like to to?",
+//         choices: [
 
-            "Add new employee",
-            "View all employees",
-            "View employees by department",
-            "Update employee role",
-            "View all roles",
-            "Add role",
-            "View all departments",
-            "Add department",
-            "Exit"
-        ]
-    }
-]
+//             "Add new employee",
+//             "View all employees",
+//             "View employees by department",
+//             "Update employee role",
+//             "View all roles",
+//             "Add role",
+//             "View all departments",
+//             "Add department",
+//             "Exit"
+//         ]
+//     }
+// ]
 
 
 // Use environment variables to connect to database
@@ -71,18 +71,18 @@ function promptUser() {
         }
         else if (answer.usersChoice === "View all employees"){
             viewEmployees();
-        }
+        } 
         else if (answer.usersChoice === "Add a department"){
             addDept();
         }
         else if (answer.usersChoice === "Add an employee role"){
             addRole();
         }
-        else if (answer.usersChoice === "Add an employee"){
-            addEmployee();
-        }
         else if (answer.usersChoice === "Update employee role"){
             updateRole();
+        }
+        else if (answer.usersChoice === "Add an employee"){
+            addEmployee();
         }
         else if (answer.usersChoice === "Exit this app"){
             exitApp();
@@ -234,9 +234,54 @@ const addEmployee = async () => {
             );
           });
       };
+
+      const updateRole = async () => {
+        let employees = await getEmployees();
+        // let roles = await getRolesID();
+      
+        inquirer
+          .prompt([
+            {
+              name: "employee",
+              type: "list",
+              message: "Which employee would you like to change role?",
+              choices: employees
+            },
+            {
+              name: "role",
+              type: "list",
+              message: "Which is the employee new role?",
+              choices: roles
+            },
+          ])
+          .then(answer => {
+            let fullName = answer.employee.split(" ");
+              let firstName = fullName[0];
+              let lastName = fullName[1];
+            const query = `
+              UPDATE employees
+              SET role_id = ?
+              WHERE first_name = ? AND last_name = ?;
+              `;
+            connection.query(query,[answer.role,firstName,lastName], function (err, res) {
+              if (err) throw err;
+              console.log("");
+              console.log(` ${firstName} ${lastName} role updated in the Database.`);
+              init();
+            }
+            );
+          });
+      };
     function getDeptsID() {
         return connection.query(`SELECT dept_name FROM departments`);
       };
+
+      async function getEmployees() {
+        return connection.query(`SELECT CONCAT (first_name,' ', last_name) AS name FROM employees`);
+      };
+      
+      // VIEW FUNCTIONS
+   
 // function updateRole()
 
 // async function getRolesID() {
