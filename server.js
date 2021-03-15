@@ -1,14 +1,33 @@
 require('dotenv').config();
 
-
 // call once somewhere in the beginning of the app
 var mysql = require("mysql");
 const inquirer = require("inquirer");
 const dotenv = require('dotenv').config();
 const cTable = require('console.table');
 const util = require("util");
-// const createDB = require("./db");
-// const promisemysql = require("promise-mysql");
+
+const actions = [
+
+    {
+        type: "list",
+        name: "actions",
+        message: "What would you like to to?",
+        choices: [
+
+            "Add new employee",
+            "View all employees",
+            "View employees by department",
+            "Update employee role",
+            "View all roles",
+            "Add role",
+            "View all departments",
+            "Add department",
+            "Exit"
+        ]
+    }
+]
+
 
 // Use environment variables to connect to database
 var connection = new mysql.createConnection({
@@ -71,49 +90,25 @@ function promptUser() {
     });
 }
 
-// Adding functions to carry out the users choice
-// function viewDepts() {
-//     const sql = `SELECT departments.dept_name AS departments, 
-//     roles.title, employees.employee_id, employees.first_name, employees.last_name
-//     FROM employees_db
-//     LEFT JOIN roles ON (roles.role_id = employees.role_id)
-//     LEFT JOIN departments ON (departments.dept_id = roles.dept_id)
-//     ORDER BY departments.dept_name`
-//     connection.promise().query(sql, (err, res) => {
-//         if (err) throw err;
-//         console.log('\n');
-//         console.log('Viewing departments');
-//         console.log('\n');
-//         console.table(res);
-//         promptUser();
-//     });
-// }
 
-    // Query to view all employees
-    // function viewDepts() {
-    //     console.log("Selecting all departments...\n");
-    //     connection.query("SELECT * FROM departments", function (err, res) {
-    //       if (err) throw err;
-    //       // Log all results of the SELECT statement
-    //       console.table(res);
-    //       start();
-    //     });
-    //   }
       
 //view all employees by department
-    async function viewDepts () {
-        console.log('\n')
-        const query = `SELECT first_name AS 'First Name',
-        last_name AS 'Last Name',
-        departments.dept_name AS 'Department Name' FROM
-        ((employees INNER JOIN roles ON role_id = roles.role_id)
-        INNER JOIN departments ON dept_id = departments.dept_id)
-        ORDER BY employees.employee_id ASC`;
-        const rows = await connection.query(query);
-        console.table(rows[0]);
-};
-
+function viewDepts() {
+    connection.query("SELECT dept_name AS Departments FROM departments ", function (err, results) {
+        console.table(results);
+        if (err) throw err;
+        promptUser()
+    });
+}
 // function viewRoles()
+function viewRoles() {
+    connection.query("SELECT title AS Roles FROM roles ", function (err, results) {
+        console.table(results);
+        if (err) throw err;
+        promptUser()
+    });
+}
+
 
 // function viewEmployees()
 
